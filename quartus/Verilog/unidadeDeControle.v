@@ -46,10 +46,10 @@ begin
 			EscReg = 2'b11;
 			ExSin = 1;
 		end
-		else if(decode[4:1] == 4'b0001)
-			EscReg = 2'b10;
 		else
+		begin
 			EscReg = 2'b01;
+		end
 		if(decode[4:1] == 4'b1001)
 			RegSelect = LDMULDIV;
 		else if(decode[4:1] == 4'b1010)
@@ -58,7 +58,7 @@ begin
 			RegSelect = decode[0] ? LDLO : LDHI;
 		else if((decode[4:0] == 5'b10001) & RegIme)
 		begin
-			EscReg = 2'b10;
+			EscReg = 2'b00;
 			RegSelect = LDRF;
 		end
 	end
@@ -85,7 +85,8 @@ begin
 		begin
 			EscMen = ~decode[0];
 			LerMen = decode[0];
-			EscReg = decode[0];
+			EscReg[0] = decode[0];
+			EscReg[1] = 0;
 			MenReg = decode[0];
 		end
 		Salto = ~decode[0];
@@ -103,6 +104,7 @@ begin
 		MenReg = decode[2];
 		Pilha[1] = &decode[1:0];
 		EscReg[0] = decode[2];
+		EscReg[1] = 0;
 		EmpDesemp = (&decode[1:0]) & ~decode[2];
 	end
 	// Entrada/Saida
@@ -112,6 +114,7 @@ begin
 		Saida = decode[0];
 		LerReg3 = decode[0];
 		EscReg[0] = ~decode[0];
+		EscReg[1] = 0;
 	end
 end
 

@@ -1,4 +1,4 @@
-module processador(clk, clk0, switch, dsp0, dsp1, dsp2, dsp3, dsp4, dsp5, dsp6, dsp7, outPC, reset, ent, ctrl4);
+module processador(clk, clk0, switch, dsp0, dsp1, dsp2, dsp3, dsp4, dsp5, dsp6, dsp7, outPC, reset, ent, ctrl4, ctrl1, ctrl2, ctrl3, CM, SP, AS, s0, s1, s0_men);
 input reset, ent, clk0;
 input[15:0] switch;
 
@@ -14,14 +14,15 @@ reg[25:0] count;
 reg[31:0] last_PC;
 reg[31:0] PC;
 
-wire[7:0] ctrl1;
-wire[4:0] ctrl2;
-wire[4:0] ctrl3;
+output[7:0] ctrl1;
+output[4:0] ctrl2;
+output[4:0] ctrl3;
 output[2:0] ctrl4;
 
 wire[31:0] instruction;
-wire[31:0] s0, s1, s0_men;
-wire[31:0] SP, AS, RF, JR;
+output[31:0] s0, s1, s0_men;
+wire[31:0] /*SP, AS,*/ RF, JR;
+output[31:0] AS, SP;
 wire[31:0] d0, d1; 
 wire[31:0] e0_ula, e1_ula, s0_ula, s1_ula;
 wire[31:0] load_addr, store_addr, md_addr;
@@ -32,8 +33,9 @@ wire[5:0] operacao;
 
 wire[4:0] reg1, reg2, reg3;
 
-wire comp, CM, cm, esc_pilha;
+wire comp, cm, esc_pilha;
 wire DL;
+output CM;
 
 //parameter LDREG = 3'd01, LDHI    = 3'd02, LDLO   = 3'd03, LDTIME = 3'd04, LDPTIME   = 3'd05; 
 parameter EmpDesemp = 3'd04, Pilha2  = 3'd03, Pilha1 = 3'd02, EscReg2 = 3'd01, EscReg1 = 3'd00; //ctrl1 
@@ -89,7 +91,7 @@ bancoDeRegistradores b0(reg2, reg1, reg3, esc0_banc, s1, cm, d0, d1, CM, DL, AS,
 unidadeLogicaAritmetica ula0(e0_ula, e1_ula, s0_ula, s1_ula, comp, operacao);
 
 //memoriaDeDados2(data, saida, addr, EscMen, ReadMen, DataType, write_clock, read_clock);
-memoriaDeDados2 md0(d0, s0_men, md_addr[7:0], ctrl2[EscMen], ctrl2[LerMen], instruction[27:26], clk, clk);
+memoriaDeDados2 md0(d0, s0_men, md_addr[7:0], ctrl2[EscMen], ctrl2[LerMen], instruction[27:26], clk0);
 
 //module moduloSaidaSetSeg(data, d0, d1, d2, d3, d4, d5, d6, d7, ctrl, reset, clk);
 moduloSaidaSetSeg ms0(d0, dsp0, dsp1, dsp2, dsp3, dsp4, dsp5, dsp6, dsp7, ctrl4[Saida], reset, clk);

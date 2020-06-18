@@ -77,14 +77,9 @@ begin
 		begin
 			RF = esc0;
 		end
-		else if(ctrl[EscReg2] & ~ctrl[EscReg1])
-		begin
-			if(LDHI == ctrl[7:5]) HI = esc1;
-			if(LDLO == ctrl[7:5]) LO = esc1;
-		end
 		else if(~ctrl[EscReg2] & ctrl[EscReg1])
 		begin
-			if(RE0 != 0)
+			if(RE0 != 5'b0)
 				Banco[RE0] = esc0;
 		end
 		else if(ctrl[EscReg2] & ctrl[EscReg1])
