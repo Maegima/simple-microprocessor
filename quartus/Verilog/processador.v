@@ -62,7 +62,7 @@ assign store_addr = ctrl1[Pilha2] ? SP : s0;
 assign md_addr = ctrl2[LerMen] ? load_addr : store_addr;
 
 // Endereco de leitura pilha
-assign pilha_addr = AS[7:0] - 8'b1;
+assign pilha_addr = AS[3:0] - 4'b1;
 assign esc_pilha = ctrl1[EmpDesemp] & ctrl1[Pilha1];
 
 // Seleciona Extensor de bits 21 ou 16
@@ -75,7 +75,7 @@ assign esc0_banc = ctrl2[MenReg] ? s0_men : ( ctrl4[Entrada] ? {16'b0, R_switch}
 memoriaDePrograma mp0(32'b0, instruction, 8'b0, PC[7:0], 1'b0, clk);
 
 //pilha(data, saida, read_addr, write_addr, EscMen, clk);
-pilha p0(last_PC + 1, s0_pilha, pilha_addr[7:0], AS[7:0], esc_pilha, clk);
+pilha p0(last_PC + 1, s0_pilha, pilha_addr[3:0], AS[3:0], esc_pilha, clk);
 
 //module unidadeDeControle(opcode, opex,ctrl1, ctrl2, ctrl3, clk);
 unidadeDeControle ctrl0(instruction[31:26], instruction[5:0], ctrl1, ctrl2, ctrl3, ctrl4);
@@ -90,7 +90,7 @@ bancoDeRegistradores b0(reg2, reg1, reg3, esc0_banc, s1, cm, d0, d1, CM, AS, SP,
 unidadeLogicaAritmetica ula0(e0_ula, e1_ula, s0_ula, s1_ula, comp, operacao);
 
 //memoriaDeDados2(data, saida, addr, EscMen, ReadMen, DataType, write_clock, read_clock);
-memoriaDeDados2 md0(d0, s0_men, md_addr[13:0], ctrl2[EscMen], ctrl2[LerMen], instruction[27:26], clk, clk);
+memoriaDeDados2 md0(d0, s0_men, md_addr[7:0], ctrl2[EscMen], ctrl2[LerMen], instruction[27:26], clk, clk);
 
 assign disp[0] = d0;
 assign disp[1] = (disp[0]/10);
@@ -101,10 +101,14 @@ assign disp[5] = (disp[4]/10);
 assign disp[6] = (disp[5]/10);
 assign disp[7] = (disp[6]/10);
 
+always @(negedge clk)
+begin
+	last_PC = PC;
+end
+
 always @(negedge clk or negedge reset)
 begin
-	if(~reset)
-	begin
+	if(~reset) begin
 		display0 = 7'b1111111;
 		display1 = 7'b1111111;
 		display2 = 7'b1111111;
@@ -114,8 +118,7 @@ begin
 		display6 = 7'b1111111;
 		display7 = 7'b1111111;
 	end
-	else if(ctrl4[Saida])
-	begin	
+	else if(ctrl4[Saida]) begin	
 		display0 = decod_BCD(disp[0]%10);
 		display1 = decod_BCD(disp[1]%10);
 		display2 = decod_BCD(disp[2]%10);
@@ -129,7 +132,6 @@ end
 
 always @(posedge clk or negedge reset)
 begin
-	last_PC = PC;
 	if(~reset) begin
 		PC = 32'b0;
 		sig_ent0 = 1'b0;
@@ -171,6 +173,15 @@ begin
 	end
 end
 
+always @(posedge clk0)
+begin
+	count = count+26'b1;
+	if(count == 26'd25000000) begin
+		clk = ~clk;
+		count = 0;
+	end
+end
+
 function automatic[6:0] decod_BCD;
 	input[3:0] in;
 	reg[6:0] display;
@@ -191,15 +202,5 @@ function automatic[6:0] decod_BCD;
 		decod_BCD = display;
 	end
 endfunction
-
-always @(posedge clk0)
-begin
-	count = count+26'b1;
-	if(count == 26'd12500000)
-	begin
-		clk = ~clk;
-		count = 0;
-	end
-end
 
 endmodule

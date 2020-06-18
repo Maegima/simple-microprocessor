@@ -1,5 +1,5 @@
 module pilha(data, saida, read_addr, write_addr, EscMen, clk);
-parameter DATA_WIDTH=32, ADDR_WIDTH=8;
+parameter DATA_WIDTH=32, ADDR_WIDTH=4;
 
 
 input [(DATA_WIDTH-1):0] data;
