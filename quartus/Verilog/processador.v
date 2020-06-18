@@ -1,9 +1,9 @@
-module processador(clk, clk0, switch, display0, display1, display2, display3, display4, display5, display6, display7, outPC, reset, ent, ctrl4);
+module processador(clk, clk0, switch, dsp0, dsp1, dsp2, dsp3, dsp4, dsp5, dsp6, dsp7, outPC, reset, ent, ctrl4);
 input reset, ent, clk0;
 input[15:0] switch;
 
 output reg clk;
-output reg[6:0] display0, display1, display2, display3, display4, display5, display6, display7;
+output[6:0] dsp0, dsp1, dsp2, dsp3, dsp4, dsp5, dsp6, dsp7;
 output[15:0] outPC;
 
 reg sig_ent0, sig_ent1;
@@ -28,8 +28,6 @@ wire[31:0] imediato, esc0_banc;
 wire[31:0] s0_pilha, pilha_addr;
 
 wire[5:0] operacao;
-
-wire[31:0] disp[7:0];
 
 wire[4:0] reg1, reg2, reg3;
 
@@ -92,42 +90,12 @@ unidadeLogicaAritmetica ula0(e0_ula, e1_ula, s0_ula, s1_ula, comp, operacao);
 //memoriaDeDados2(data, saida, addr, EscMen, ReadMen, DataType, write_clock, read_clock);
 memoriaDeDados2 md0(d0, s0_men, md_addr[7:0], ctrl2[EscMen], ctrl2[LerMen], instruction[27:26], clk, clk);
 
-assign disp[0] = d0;
-assign disp[1] = (disp[0]/10);
-assign disp[2] = (disp[1]/10);
-assign disp[3] = (disp[2]/10);
-assign disp[4] = (disp[3]/10);
-assign disp[5] = (disp[4]/10);
-assign disp[6] = (disp[5]/10);
-assign disp[7] = (disp[6]/10);
+//module moduloSaidaSetSeg(data, d0, d1, d2, d3, d4, d5, d6, d7, ctrl, reset, clk);
+moduloSaidaSetSeg ms0(d0, dsp0, dsp1, dsp2, dsp3, dsp4, dsp5, dsp6, dsp7, ctrl4[Saida], reset, clk);
 
 always @(negedge clk)
 begin
 	last_PC = PC;
-end
-
-always @(negedge clk or negedge reset)
-begin
-	if(~reset) begin
-		display0 = 7'b1111111;
-		display1 = 7'b1111111;
-		display2 = 7'b1111111;
-		display3 = 7'b1111111;
-		display4 = 7'b1111111;
-		display5 = 7'b1111111;
-		display6 = 7'b1111111;
-		display7 = 7'b1111111;
-	end
-	else if(ctrl4[Saida]) begin	
-		display0 = decod_BCD(disp[0]%10);
-		display1 = decod_BCD(disp[1]%10);
-		display2 = decod_BCD(disp[2]%10);
-		display3 = decod_BCD(disp[3]%10);
-		display4 = decod_BCD(disp[4]%10);
-		display5 = decod_BCD(disp[5]%10);
-		display6 = decod_BCD(disp[6]%10);
-		display7 = decod_BCD(disp[7]%10);
-	end
 end
 
 always @(posedge clk or negedge reset)
@@ -181,26 +149,5 @@ begin
 		count = 0;
 	end
 end
-
-function automatic[6:0] decod_BCD;
-	input[3:0] in;
-	reg[6:0] display;
-	begin
-		case(in)
-			4'd0:    display = 7'b1000000;
-			4'd1:    display = 7'b1111001;
-			4'd2:    display = 7'b0100100;
-			4'd3:    display = 7'b0110000;
-			4'd4:    display = 7'b0011001;
-			4'd5:    display = 7'b0010010;
-			4'd6:    display = 7'b0000010;
-			4'd7:    display = 7'b1111000;
-			4'd8:    display = 7'B0000000;
-			4'd9:    display = 7'b0010000;
-			default: display = 7'b1111111;
-		endcase
-		decod_BCD = display;
-	end
-endfunction
 
 endmodule

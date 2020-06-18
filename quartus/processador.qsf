@@ -52,20 +52,20 @@ set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_location_assignment PIN_E21 -to clk -comment clk
-set_location_assignment PIN_G18 -to display0[0] -comment disp
-set_location_assignment PIN_F22 -to display0[1] -comment disp
-set_location_assignment PIN_E17 -to display0[2] -comment disp
-set_location_assignment PIN_L26 -to display0[3] -comment disp
-set_location_assignment PIN_L25 -to display0[4] -comment disp
-set_location_assignment PIN_J22 -to display0[5] -comment disp
-set_location_assignment PIN_H22 -to display0[6] -comment disp
-set_location_assignment PIN_M24 -to display1[0] -comment disp
-set_location_assignment PIN_Y22 -to display1[1] -comment disp
-set_location_assignment PIN_W21 -to display1[2] -comment disp
-set_location_assignment PIN_W22 -to display1[3] -comment disp
-set_location_assignment PIN_W25 -to display1[4] -comment disp
-set_location_assignment PIN_U23 -to display1[5] -comment disp
-set_location_assignment PIN_U24 -to display1[6] -comment disp
+set_location_assignment PIN_G18 -to dsp0[0] -comment disp
+set_location_assignment PIN_F22 -to dsp0[1] -comment disp
+set_location_assignment PIN_E17 -to dsp0[2] -comment disp
+set_location_assignment PIN_L26 -to dsp0[3] -comment disp
+set_location_assignment PIN_L25 -to dsp0[4] -comment disp
+set_location_assignment PIN_J22 -to dsp0[5] -comment disp
+set_location_assignment PIN_H22 -to dsp0[6] -comment disp
+set_location_assignment PIN_M24 -to dsp1[0] -comment disp
+set_location_assignment PIN_Y22 -to dsp1[1] -comment disp
+set_location_assignment PIN_W21 -to dsp1[2] -comment disp
+set_location_assignment PIN_W22 -to dsp1[3] -comment disp
+set_location_assignment PIN_W25 -to dsp1[4] -comment disp
+set_location_assignment PIN_U23 -to dsp1[5] -comment disp
+set_location_assignment PIN_U24 -to dsp1[6] -comment disp
 set_location_assignment PIN_AB21 -to switch[0] -comment sw
 set_location_assignment PIN_AC21 -to switch[1] -comment sw
 set_location_assignment PIN_AD21 -to switch[2] -comment sw
@@ -95,55 +95,54 @@ set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -
 set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -fall
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
-set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS OFF
 set_global_assignment -name SMART_RECOMPILE ON
 set_global_assignment -name FITTER_EFFORT "FAST FIT"
 set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
 set_location_assignment PIN_Y2 -to clk0 -comment clk
 set_location_assignment PIN_G22 -to ctrl4[0]
 set_location_assignment PIN_G21 -to ctrl4[1]
-set_location_assignment PIN_AA14 -to display7[6] -comment disp
-set_location_assignment PIN_AG18 -to display7[5] -comment disp
-set_location_assignment PIN_AF17 -to display7[4] -comment disp
-set_location_assignment PIN_AD17 -to display7[0] -comment disp
-set_location_assignment PIN_AH17 -to display7[3] -comment disp
-set_location_assignment PIN_AG17 -to display7[2] -comment disp
-set_location_assignment PIN_AE17 -to display7[1] -comment disp
-set_location_assignment PIN_AC17 -to display6[6] -comment disp
-set_location_assignment PIN_AA15 -to display6[5] -comment disp
-set_location_assignment PIN_AB15 -to display6[4] -comment disp
-set_location_assignment PIN_AB17 -to display6[3] -comment disp
-set_location_assignment PIN_AA16 -to display6[2] -comment disp
-set_location_assignment PIN_AB16 -to display6[1] -comment disp
-set_location_assignment PIN_AA17 -to display6[0] -comment disp
-set_location_assignment PIN_AH18 -to display5[6] -comment disp
-set_location_assignment PIN_AF18 -to display5[5] -comment disp
-set_location_assignment PIN_AG19 -to display5[4] -comment disp
-set_location_assignment PIN_AH19 -to display5[3] -comment disp
-set_location_assignment PIN_AB18 -to display5[2] -comment disp
-set_location_assignment PIN_AC18 -to display5[1] -comment disp
-set_location_assignment PIN_AD18 -to display5[0] -comment disp
-set_location_assignment PIN_AE18 -to display4[6] -comment disp
-set_location_assignment PIN_AF19 -to display4[5] -comment disp
-set_location_assignment PIN_AE19 -to display4[4] -comment disp
-set_location_assignment PIN_AH21 -to display4[3] -comment disp
-set_location_assignment PIN_AG21 -to display4[2] -comment disp
-set_location_assignment PIN_AA19 -to display4[1] -comment disp
-set_location_assignment PIN_AB19 -to display4[0] -comment disp
-set_location_assignment PIN_Y19 -to display3[6] -comment disp
-set_location_assignment PIN_AF23 -to display3[5] -comment disp
-set_location_assignment PIN_AD24 -to display3[4] -comment disp
-set_location_assignment PIN_AA21 -to display3[3] -comment disp
-set_location_assignment PIN_AB20 -to display3[2] -comment disp
-set_location_assignment PIN_U21 -to display3[1] -comment disp
-set_location_assignment PIN_V21 -to display3[0] -comment disp
-set_location_assignment PIN_W28 -to display2[6] -comment disp
-set_location_assignment PIN_W27 -to display2[5] -comment disp
-set_location_assignment PIN_Y26 -to display2[4] -comment disp
-set_location_assignment PIN_W26 -to display2[3] -comment disp
-set_location_assignment PIN_Y25 -to display2[2] -comment disp
-set_location_assignment PIN_AA26 -to display2[1] -comment disp
-set_location_assignment PIN_AA25 -to display2[0] -comment disp
+set_location_assignment PIN_AA14 -to dsp7[6] -comment disp
+set_location_assignment PIN_AG18 -to dsp7[5] -comment disp
+set_location_assignment PIN_AF17 -to dsp7[4] -comment disp
+set_location_assignment PIN_AD17 -to dsp7[0] -comment disp
+set_location_assignment PIN_AH17 -to dsp7[3] -comment disp
+set_location_assignment PIN_AG17 -to dsp7[2] -comment disp
+set_location_assignment PIN_AE17 -to dsp7[1] -comment disp
+set_location_assignment PIN_AC17 -to dsp6[6] -comment disp
+set_location_assignment PIN_AA15 -to dsp6[5] -comment disp
+set_location_assignment PIN_AB15 -to dsp6[4] -comment disp
+set_location_assignment PIN_AB17 -to dsp6[3] -comment disp
+set_location_assignment PIN_AA16 -to dsp6[2] -comment disp
+set_location_assignment PIN_AB16 -to dsp6[1] -comment disp
+set_location_assignment PIN_AA17 -to dsp6[0] -comment disp
+set_location_assignment PIN_AH18 -to dsp5[6] -comment disp
+set_location_assignment PIN_AF18 -to dsp5[5] -comment disp
+set_location_assignment PIN_AG19 -to dsp5[4] -comment disp
+set_location_assignment PIN_AH19 -to dsp5[3] -comment disp
+set_location_assignment PIN_AB18 -to dsp5[2] -comment disp
+set_location_assignment PIN_AC18 -to dsp5[1] -comment disp
+set_location_assignment PIN_AD18 -to dsp5[0] -comment disp
+set_location_assignment PIN_AE18 -to dsp4[6] -comment disp
+set_location_assignment PIN_AF19 -to dsp4[5] -comment disp
+set_location_assignment PIN_AE19 -to dsp4[4] -comment disp
+set_location_assignment PIN_AH21 -to dsp4[3] -comment disp
+set_location_assignment PIN_AG21 -to dsp4[2] -comment disp
+set_location_assignment PIN_AA19 -to dsp4[1] -comment disp
+set_location_assignment PIN_AB19 -to dsp4[0] -comment disp
+set_location_assignment PIN_Y19 -to dsp3[6] -comment disp
+set_location_assignment PIN_AF23 -to dsp3[5] -comment disp
+set_location_assignment PIN_AD24 -to dsp3[4] -comment disp
+set_location_assignment PIN_AA21 -to dsp3[3] -comment disp
+set_location_assignment PIN_AB20 -to dsp3[2] -comment disp
+set_location_assignment PIN_U21 -to dsp3[1] -comment disp
+set_location_assignment PIN_V21 -to dsp3[0] -comment disp
+set_location_assignment PIN_W28 -to dsp2[6] -comment disp
+set_location_assignment PIN_W27 -to dsp2[5] -comment disp
+set_location_assignment PIN_Y26 -to dsp2[4] -comment disp
+set_location_assignment PIN_W26 -to dsp2[3] -comment disp
+set_location_assignment PIN_Y25 -to dsp2[2] -comment disp
+set_location_assignment PIN_AA26 -to dsp2[1] -comment disp
+set_location_assignment PIN_AA25 -to dsp2[0] -comment disp
 set_location_assignment PIN_AH22 -to reset -comment sw
 set_location_assignment PIN_AE24 -to ent -comment sw
 set_location_assignment PIN_G15 -to outPC[15] -comment pc
@@ -162,6 +161,10 @@ set_location_assignment PIN_F21 -to outPC[3] -comment pc
 set_location_assignment PIN_E19 -to outPC[2] -comment pc
 set_location_assignment PIN_F19 -to outPC[1] -comment pc
 set_location_assignment PIN_G19 -to outPC[0] -comment pc
+set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS ON
+
+set_global_assignment -name OPTIMIZE_MULTI_CORNER_TIMING OFF
+set_global_assignment -name OPTIMIZE_TIMING OFF
 set_global_assignment -name VERILOG_FILE Verilog/unidadeLogicaAritmetica.v
 set_global_assignment -name VERILOG_FILE Verilog/unidadeDeControle.v
 set_global_assignment -name VERILOG_FILE Verilog/processador.v
@@ -173,4 +176,5 @@ set_global_assignment -name VERILOG_FILE Verilog/memoria.v
 set_global_assignment -name VERILOG_FILE Verilog/controladorULA.v
 set_global_assignment -name VERILOG_FILE Verilog/bancoDeRegistradores.v
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform.vwf
+set_global_assignment -name VERILOG_FILE Verilog/moduloSaidaSetSeg.v
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

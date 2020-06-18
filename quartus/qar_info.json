@@ -1,7 +1,7 @@
 {
-	"common_dir" : "C:/Users/Lucas/Desktop/Uinfesp_3/AOC/Verilog/processadorA/processador7/",
-	"acds_version" : "Version 18.0.0",
-	"platform" : "windows",
-	"os" : "Windows 10",
+	"common_dir" : "/home-local/aluno/Downloads/processador7/processador7_restored/",
+	"acds_version" : "Version 17.1.0",
+	"platform" : "linux",
+	"os" : "Debian GNU/Linux",
 	"qpf" : "processador.qpf"
 }
