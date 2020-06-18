@@ -455,13 +455,13 @@
 ***Opcode(6) | Reg(5) | EN(21) ou NU(21)***
 100XXX R(5) X(21)
 
-### 1.  Carregar
+### 1. Carregar
 **Opcode(6) | Reg(5)  | EN(21)**
 100000 R(5) EN(21)
 
     MEMORIA[EN[21]] <= (R)
 
-### 2.  Carregar Meia Palavra
+### 2. Carregar Meia Palavra
 **Opcode(6) | Reg(5) | EN(21)**
 100001 R(5) EN(21)
 
@@ -473,19 +473,19 @@
 
     MEMORIA[EN[21]] <= BYTE((R))
 
-### 4.  Empilhar
+### 4. Empilhar
 **Opcode(6) | Reg(5) | NU(21)**
 100011 R(5) NU(21)
 
     MEMORIA[(SP)] <= (R) ; (SP) <= (SP) + 4
 
-### 5.  Descarregar
+### 5. Descarregar
 **Opcode(6) | Reg(5) | EN(21)**
 100100 R(5) EN(21)
 
     (R) <= MEMORIA[EN[21]]
 
-### 6.  Descarregar Meia Palavra
+### 6. Descarregar Meia Palavra
 **Opcode(6) | Reg(5) | EN(21)**
 100101 R(5) EN(21)
 
@@ -507,13 +507,13 @@
 ***Opcode(6) | Reg(5) | Reg(5) | IM(16)***
 101XXX R(5) S(5) IM(16)
 
-### 1.  Carregar RI
+### 1. Carregar RI
 **Opcode(6) | Reg(5) | Reg(5)  | IM(16)**
 101000 R(5) S(5) IM(16)
 
     MEMORIA[(S) + IM[16]] <= (R)
 
-### 2.  Carregar Meia Palavra RI
+### 2. Carregar Meia Palavra RI
 **Opcode(6) | Reg(5) | Reg(5)  | IM(16)**
 101001 R(5) S(5) IM(16)
 
@@ -525,13 +525,13 @@
 
     MEMORIA[(S) + IM[16]] <= BYTE((R))
     
-### 5.  Descarregar RI
+### 5. Descarregar RI
 **Opcode(6) | Reg(5) | Reg(5)  | IM(16)**
 101100 R(5) S(5) IM(16)
 
     (R) <= MEMORIA[(S) + IM[16]]
 
-### 6.  Descarregar Meia Palavra RI
+### 6. Descarregar Meia Palavra RI
 **Opcode(6) | Reg(5) | Reg(5)  | IM(16)**
 101101 R(5) S(5) IM(16)
 
@@ -547,19 +547,19 @@
 ***Opcode(6) |  EN(26) ou NU(26)***
 1100XX XXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-### 1.  Salto
+### 1. Salto
 **Opcode(6) |  EN(26)**
 110000 EN(26)
 
     (PC) <= EN[26]
 
-### 2.  Salto condicional
+### 2. Salto condicional
 **Opcode(6) |  EN(26)**
 110001 EN(26)
 
     se CM então : (PC) <= EN[26]
 
-### 3.  Saltar e conectar
+### 3. Saltar e conectar
 **Opcode(6) |  EN(26)**
 110010 EN(26)
 
@@ -576,13 +576,13 @@
 ***Opcode(6) |  Reg(5) | NU(21)***
 11110X XXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-### 1.  Entrada
+### 1. Entrada
 **Opcode(6) | Reg(5) | NU(21) **
 111100 | R(5) | NU(21)
 
 	(R) <= (RE)
 
-### 2.  Saída
+### 2. Saída
 **Opcode(6) | Reg(5) | NU(21) **
 111101 | S(5) | NU(21)
 
@@ -709,7 +709,7 @@
 		* [3.4.6 Descarregar Meia Palavra](#6-descarregar-meia-palavra)
 		* [3.4.7 Descarregar Byte](#7-descarregar-byte)
 		* [3.4.8 Desempilhar](#8-desempilhar)
-	* #### [3.5 Tipo 6(Memória 2)](#tipo-5memória-2)
+	* #### [3.5 Tipo 5(Memória 2)](#tipo-5memória-2)
 		* [3.5.1 Carregar RI](#1-carregar-ri)
 		* [3.5.2 Carregar Meia Palavra RI](#2-carregar-meia-palavra-ri)
 		* [3.5.3 Carregar Byte RI](#3-carregar-byte-ri)
@@ -722,8 +722,8 @@
 		* [3.6.3 Saltar e conectar](#3-saltar-e-conectar)
 		* [3.6.4 Saltar e desconectar](#4-saltar-e-desconectar)
 	* #### [3.7 Tipo 7(Entrada/Saída)](#tipo-7entradasaída)
-		* [3.7.1 Salto](#1-entrada)
-		* [3.7.2 Salto condicional](#2-saída)
+		* [3.7.1 Entrada](#1-entrada)
+		* [3.7.2 Saída](#2-saída)
 * ### [4. Banco de Registradores](#banco-de-registradores)
 <!--stackedit_data:
 eyJoaXN0b3J5IjpbNTQwNjkzNzYxLDIxMzIzNzQwMzEsMTQyND
