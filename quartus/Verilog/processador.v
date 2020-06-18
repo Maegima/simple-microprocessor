@@ -1,4 +1,4 @@
-module processador(clk, clk0, switch, dsp0, dsp1, dsp2, dsp3, dsp4, dsp5, dsp6, dsp7, outPC, reset, ent, ctrl4);
+module processador(clk, clk0, switch, dsp0, dsp1, dsp2, dsp3, dsp4, dsp5, dsp6, dsp7, outPC, reset, ent, ctrl4, ctrl1, ctrl2, ctrl3, SP, AS, s0, s1, s0_men);
 input reset, ent, clk0;
 input[15:0] switch;
 
@@ -7,21 +7,22 @@ output[6:0] dsp0, dsp1, dsp2, dsp3, dsp4, dsp5, dsp6, dsp7;
 output[15:0] outPC;
 
 reg sig_ent0, sig_ent1;
-reg sig_dsp0, sig_dsp1;
+reg sig_dsp0;
 
 reg[15:0] R_switch;
 reg[25:0] count;
 reg[31:0] last_PC;
 reg[31:0] PC;
 
-wire[7:0] ctrl1;
-wire[4:0] ctrl2;
-wire[4:0] ctrl3;
+output[7:0] ctrl1;
+output[4:0] ctrl2;
+output[4:0] ctrl3;
 output[2:0] ctrl4;
 
 wire[31:0] instruction;
-wire[31:0] s0, s1, s0_men;
-wire[31:0] SP, AS, RF, JR;
+output[31:0] s0, s1, s0_men;
+wire[31:0] /*SP, AS,*/ RF, JR;
+output[31:0] AS, SP;
 wire[31:0] d0, d1; 
 wire[31:0] e0_ula, e1_ula, s0_ula, s1_ula;
 wire[31:0] load_addr, store_addr, md_addr;
@@ -56,8 +57,8 @@ assign s1 = clk ? s1_ula : s1;
 assign cm = clk ? comp : cm;
 
 // Enderecos de escrita/leitura memoria de dados 
-assign load_addr = ctrl1[Pilha2] ? SP - 32'd4 : s0_ula;
-assign store_addr = ctrl1[Pilha2] ? SP : s0;
+assign load_addr = ctrl1[Pilha2] ? SP : s0_ula;
+assign store_addr = ctrl1[Pilha2] ? SP - 32'd4 : s0;
 assign md_addr = ctrl2[LerMen] ? load_addr : store_addr;
 
 // Endereco de leitura pilha
@@ -106,7 +107,6 @@ begin
 		sig_ent0 = 1'b0;
 		sig_ent1 = 1'b0;
 		sig_dsp0 = 1'b0;
-		sig_dsp1 = 1'b0;
  	end
 	else if(ctrl1[7:5] == 3'b001) begin
 		if(ctrl3[Salto])
@@ -142,7 +142,6 @@ begin
 		else if(ctrl4[Delay]) begin
 			if(~DL & sig_dsp0) begin
 				PC = PC + 32'b1;
-				sig_dsp1 = 1'b0;
 				sig_dsp0 = 1'b0;
 			end
 			else begin
@@ -162,7 +161,7 @@ begin
 	end
 	else begin
 		count = count+26'b1;
-		if(count == 26'd25000000) begin
+		if(count == 26'd12500000) begin
 			clk = ~clk;
 			count = 0;
 		end

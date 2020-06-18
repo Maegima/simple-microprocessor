@@ -60,45 +60,47 @@ begin
 		Banco[31] = 0;
 		PTIME = 0;
 	end
-	else if(ctrl[7:5] == LDMULDIV)
-	begin
-		if(ctrl[EscReg2] & ctrl[EscReg1])
+	else begin 
+		if(ctrl[7:5] == LDMULDIV)
 		begin
-			PTIME = esc0;
+			if(ctrl[EscReg2] & ctrl[EscReg1])
+			begin
+				PTIME = esc0;
+			end
+			else
+			begin
+				LO = esc0;
+				HI = esc1;
+			end
 		end
-		else
+		else if(ctrl[7:5] == LDRF)
 		begin
-			LO = esc0;
-			HI = esc1;
+			RF = esc0;
 		end
-	end
-	else if(ctrl[7:5] == LDRF)
-	begin
-		RF = esc0;
-	end
-	else if(ctrl[EscReg2] & ~ctrl[EscReg1])
-	begin
-		if(LDHI == ctrl[7:5]) HI = esc1;
-		if(LDLO == ctrl[7:5]) LO = esc1;
-	end
-	else if(~ctrl[EscReg2] & ctrl[EscReg1])
-	begin
-		if(RE0 != 0)
-			Banco[RE0] = esc0;
-	end
-	else if(ctrl[EscReg2] & ctrl[EscReg1])
-	begin
-		CM = comp;
-	end
-	else if(ctrl[Pilha2])
-	begin
-		if(ctrl[EmpDesemp]) Banco[31] = Banco[31] + 4;
-		else Banco[31] = Banco[31] - 4;
-	end
-	else if(ctrl[Pilha1])
-	begin
-		if(ctrl[EmpDesemp]) Banco[30] = Banco[30] + 1;
-		else Banco[30] = Banco[30] - 1;
+		else if(ctrl[EscReg2] & ~ctrl[EscReg1])
+		begin
+			if(LDHI == ctrl[7:5]) HI = esc1;
+			if(LDLO == ctrl[7:5]) LO = esc1;
+		end
+		else if(~ctrl[EscReg2] & ctrl[EscReg1])
+		begin
+			if(RE0 != 0)
+				Banco[RE0] = esc0;
+		end
+		else if(ctrl[EscReg2] & ctrl[EscReg1])
+		begin
+			CM = comp;
+		end
+		if(ctrl[Pilha2])
+		begin
+			if(ctrl[EmpDesemp]) Banco[31] = Banco[31] - 4;
+			else Banco[31] = Banco[31] + 4;
+		end
+		if(ctrl[Pilha1])
+		begin
+			if(ctrl[EmpDesemp]) Banco[30] = Banco[30] + 1;
+			else Banco[30] = Banco[30] - 1;
+		end
 	end
 end
 

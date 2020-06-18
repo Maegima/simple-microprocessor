@@ -102,7 +102,7 @@ begin
 		LerMen = decode[2];
 		MenReg = decode[2];
 		Pilha[1] = &decode[1:0];
-		EscReg = decode[2];
+		EscReg[0] = decode[2];
 		EmpDesemp = (&decode[1:0]) & ~decode[2];
 	end
 	// Entrada/Saida
