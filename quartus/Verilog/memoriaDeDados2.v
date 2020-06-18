@@ -1,4 +1,4 @@
-module memoriaDeDados2(data, saida, addr, EscMen, ReadMen, DataType, write_clock, read_clock, data0, addr0, addr1, addr2, addr3, EscMen0, EscMen1, EscMen2, EscMen3);
+module memoriaDeDados2(data, saida, addr, EscMen, ReadMen, DataType, write_clock, read_clock);
 parameter DATA_WIDTH=32, ADDR_WIDTH=4;
 	input [(DATA_WIDTH-1):0] data;
 	input [(ADDR_WIDTH+1):0] addr;
@@ -6,12 +6,13 @@ parameter DATA_WIDTH=32, ADDR_WIDTH=4;
 	input EscMen, ReadMen, write_clock, read_clock;
 	output reg [(DATA_WIDTH-1):0] saida;
 	
-	wire [7:0] s0, s1, s2, s3;
-	output [ADDR_WIDTH-1:0] addr0, addr1, addr2, addr3;
-	//wire [7:0] d0, d1, d2, d3;
-	output EscMen0, EscMen1, EscMen2, EscMen3;
+	reg [(DATA_WIDTH-1):0] dd;
 	
-	output [(DATA_WIDTH-1):0] data0;
+	wire [7:0] s0, s1, s2, s3;
+	wire [ADDR_WIDTH-1:0] addr0, addr1, addr2, addr3;
+	wire EscMen0, EscMen1, EscMen2, EscMen3;
+	
+	wire [(DATA_WIDTH-1):0] data0;
 	wire [3:0] esc;
 	wire [1:0] selMen;
 	
@@ -39,9 +40,15 @@ parameter DATA_WIDTH=32, ADDR_WIDTH=4;
 	
 	memoria m3(data0[31:24], s3, addr3, addr3, EscMen & EscMen3, write_clock, read_clock);
 	
-always @(s0 or s1 or s2 or s3 or ReadMen or DataType or addr[1:0] or read_clock)
+always @(negedge read_clock)
 begin
-	if(ReadMen & read_clock) begin
+	dd = saida;
+end
+	
+always @(ReadMen or DataType or addr[1:0] or read_clock or s0 or s1 or s2 or s3 or dd)
+begin
+	if(ReadMen & read_clock) 
+	begin
 		if(DataType == 2'b01)
 			case(addr[1:0])
 				2'b00: saida = {24'b0, s0};
@@ -64,5 +71,7 @@ begin
 				2'b11: saida = {s2, s1, s0, s3};
 			endcase
 	end
+	else
+		saida = dd;
 end
 endmodule

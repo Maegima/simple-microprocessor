@@ -1,4 +1,4 @@
-module processador(clk, ctrl1, ctrl2, ctrl3, PC, d0, d1, CM, instruction, s0, s1, e1_ula, e0_ula, s0_men);
+module processador(clk, ctrl1, ctrl2, ctrl3, PC, d0, d1, CM, instruction, s0, s1, e1_ula, e0_ula, s0_men, RF);
 input clk;
 output[7:0] ctrl1;
 output[4:0] ctrl2;
@@ -9,11 +9,14 @@ output CM;
 output[31:0] d0, d1, instruction, e0_ula, e1_ula, s0, s1, s0_men;
 
 reg[31:0] last_PC;
-reg[31:0] store_addr, load_addr;
 
 wire comp, cm, escPilha;
-wire[31:0] JR, s0_ula, s1_ula, imediato, esc0_banc, SP, AS, RF, md_addr, s0_pilha;
+wire [7:0] pilha_read;
+wire[31:0] JR, s0_ula, s1_ula, imediato, esc0_banc, SP, md_addr, s0_pilha, AS;
 wire[5:0] operacao;
+output[31:0] RF;
+
+wire[31:0] load_addr, store_addr;
 
 wire[4:0] reg1, reg2, reg3;
 
@@ -31,7 +34,6 @@ assign reg3 = instruction[25:21];
 assign reg2 = ctrl2[LerReg3] ? instruction[25:21] : instruction[20:16];
 assign reg1 = ctrl2[LerReg3] ? instruction[20:16] : instruction[15:11];   
 
-
 assign s0 = clk ? s0_ula : s0;
 assign s1 = clk ? s1_ula : s1;
 assign cm = clk ? comp : cm;
@@ -46,11 +48,17 @@ assign md_addr = ctrl2[LerMen] ? load_addr : store_addr;
 
 assign escPilha = ctrl1[EmpDesemp] & ctrl1[Pilha1];
 
+assign pilha_read = AS[7:0] - 8'b1;
+
+assign load_addr = ctrl1[Pilha2] ? SP - 32'd4 : s0_ula;
+
+assign store_addr = ctrl1[Pilha2] ? SP : s0;
+
 //memoriaDePrograma(data, saida, write_addr, read_addr, EscMen, clk);
-memoriaDePrograma mp0(0, instruction, 0, PC, 0, clk);
+memoriaDePrograma mp0(32'b0, instruction, 8'b0, PC[7:0], 1'b0, clk);
 
 //pilha(data, saida, read_addr, write_addr, EscMen, clk);
-pilha p0(last_PC + 1, s0_pilha, AS - 1, AS, escPilha, clk);
+pilha p0(last_PC + 1, s0_pilha, pilha_read, AS[7:0], escPilha, clk);
 
 //module unidadeDeControle(opcode, opex,ctrl1, ctrl2, ctrl3, clk);
 unidadeDeControle ctrl0(instruction[31:26], instruction[5:0], ctrl1, ctrl2, ctrl3);
@@ -64,24 +72,11 @@ bancoDeRegistradores b0(reg2, reg1, reg3, esc0_banc, s1, cm, d0, d1, CM, AS, SP,
 //UnidadeLogicaAritmetica(e0, e1, s0, s1, c0, seletor);
 unidadeLogicaAritmetica ula0(e0_ula, e1_ula, s0_ula, s1_ula, comp, operacao);
 
+//memoriaDeDados2(data, saida, addr, EscMen, ReadMen, DataType, write_clock, read_clock);
+memoriaDeDados2 md0(d0, s0_men, md_addr[5:0], ctrl2[EscMen], ctrl2[LerMen], instruction[27:26], clk, clk);
+
 //memoriaDeDados(data, saida, addr, DataType, EscMen, LerMen, clk);
-memoriaDeDados md0(d0, s0_men, md_addr, instruction[27:26], ctrl2[EscMen], ctrl2[LerMen], clk);
-
-always @(instruction)
-begin
-	if(ctrl1[Pilha2])
-		load_addr = SP - 4;
-	else
-		load_addr = s0_ula;
-end
-
-always @(posedge clk)
-begin
-	if(ctrl1[Pilha2])
-		store_addr = SP;
-	else
-		store_addr = s0_ula;
-end
+//memoriaDeDados md0(d0, s0_men, md_addr, instruction[27:26], ctrl2[EscMen], ctrl2[LerMen], clk);
 
 always @(posedge clk)
 begin
