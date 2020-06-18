@@ -1,4 +1,4 @@
-module processador(clk, ctrl1, ctrl2, ctrl3, PC, d0, d1, CM, instruction, s0, s1, e1_ula, e0_ula);
+module processador(clk, ctrl1, ctrl2, ctrl3, PC, d0, d1, CM, instruction, s0, s1, e1_ula, e0_ula, s0_men);
 input clk;
 output[7:0] ctrl1;
 output[4:0] ctrl2;
@@ -6,13 +6,13 @@ output[4:0] ctrl3;
 
 output reg[31:0] PC;
 output CM;
-output[31:0] d0, d1, instruction, e0_ula, e1_ula, s0, s1;
+output[31:0] d0, d1, instruction, e0_ula, e1_ula, s0, s1, s0_men;
 
-reg[31:0] AS_value, last_PC;
+reg[31:0] last_PC;
 reg[31:0] store_addr, load_addr;
 
-wire comp, cm;
-wire[31:0] JR, s0_ula, s1_ula, imediato, esc0_banc, e0_men, s0_men, AS, SP, RF, md_addr;
+wire comp, cm, escPilha;
+wire[31:0] JR, s0_ula, s1_ula, imediato, esc0_banc, SP, AS, RF, md_addr, s0_pilha;
 wire[5:0] operacao;
 
 wire[4:0] reg1, reg2, reg3;
@@ -44,10 +44,13 @@ assign esc0_banc = ctrl2[MenReg] ? s0_men : s0;
 
 assign md_addr = ctrl2[LerMen] ? load_addr : store_addr; 
 
-assign e0_men = ctrl1[Pilha1] ? last_PC + 1 : d0;
+assign escPilha = ctrl1[EmpDesemp] & ctrl1[Pilha1];
 
 //memoriaDePrograma(data, saida, write_addr, read_addr, EscMen, clk);
 memoriaDePrograma mp0(0, instruction, 0, PC, 0, clk);
+
+//pilha(data, saida, read_addr, write_addr, EscMen, clk);
+pilha p0(last_PC + 1, s0_pilha, AS - 1, AS, escPilha, clk);
 
 //module unidadeDeControle(opcode, opex,ctrl1, ctrl2, ctrl3, clk);
 unidadeDeControle ctrl0(instruction[31:26], instruction[5:0], ctrl1, ctrl2, ctrl3);
@@ -62,24 +65,11 @@ bancoDeRegistradores b0(reg2, reg1, reg3, esc0_banc, s1, cm, d0, d1, CM, AS, SP,
 unidadeLogicaAritmetica ula0(e0_ula, e1_ula, s0_ula, s1_ula, comp, operacao);
 
 //memoriaDeDados(data, saida, addr, DataType, EscMen, LerMen, clk);
-memoriaDeDados md0(e0_men, s0_men, md_addr, instruction[27:26], ctrl2[EscMen], ctrl2[LerMen], clk);
-
-always @(negedge clk)
-begin
-	if(ctrl1[Pilha1])
-	begin
-		if(ctrl1[EmpDesemp])
-			AS_value = last_PC + 1;
-		else
-			AS_value = s0_men;
-	end
-end
+memoriaDeDados md0(d0, s0_men, md_addr, instruction[27:26], ctrl2[EscMen], ctrl2[LerMen], clk);
 
 always @(instruction)
 begin
-	if(ctrl1[Pilha1])
-		load_addr = AS - 8;
-	else if(ctrl1[Pilha2])
+	if(ctrl1[Pilha2])
 		load_addr = SP - 4;
 	else
 		load_addr = s0_ula;
@@ -87,9 +77,7 @@ end
 
 always @(posedge clk)
 begin
-	if(ctrl1[Pilha1])
-		store_addr = AS;
-	else if(ctrl1[Pilha2])
+	if(ctrl1[Pilha2])
 		store_addr = SP;
 	else
 		store_addr = s0_ula;
@@ -114,7 +102,7 @@ begin
 			if(ctrl1[EmpDesemp])
 				PC = {6'b0, instruction[25:0]};
 			else
-				PC = AS_value;
+				PC = s0_pilha;
 		end
 		else if(ctrl3[Salto])
 			PC = {6'b0, instruction[25:0]};

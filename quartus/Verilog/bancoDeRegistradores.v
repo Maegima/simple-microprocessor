@@ -9,24 +9,20 @@ input[31:0] esc0, esc1;
 input[7:0] ctrl;
 input clk, comp;
 output reg CM;
-output reg[31:0] D0, D1, AS, SP, RF;
-output[31:0] JR;
+output reg[31:0] D0, D1, RF;
+output[31:0] JR, AS, SP;
 
 reg[31:0]Banco[31:0];
 reg[31:0] HI, LO, TIME, PTIME;
 
 initial
 begin
-	HI = 0; LO = 0; TIME = 65; PTIME = 123; AS = 0; SP = 0; RF = 73;
-	//programa de teste
-	//Banco[0] = 0;
-	/*Banco[1] = 7;
-	Banco[2] = 14;
-	Banco[3] = 6;
-	Banco[4] = 3;*/
+	HI = 0; LO = 0; TIME = 65; PTIME = 123; RF = 73;
 end
 
 assign JR = Banco[29];
+assign AS = Banco[30];
+assign SP = Banco[31];
 
 always @(posedge clk)
 begin
@@ -84,17 +80,13 @@ begin
 	end
 	if(ctrl[Pilha2])
 	begin
-		SP = Banco[31];
-		if(ctrl[EmpDesemp]) SP = SP + 4;
-		else SP = SP - 4;
-		Banco[31] = SP;
+		if(ctrl[EmpDesemp]) Banco[31] = Banco[31] + 4;
+		else Banco[31] = Banco[31] - 4;
 	end
 	if(ctrl[Pilha1])
 	begin
-		AS = Banco[30];
-		if(ctrl[EmpDesemp]) AS = AS + 4;
-		else AS = AS - 4;
-		Banco[30] = AS;
+		if(ctrl[EmpDesemp]) Banco[30] = Banco[30] + 1;
+		else Banco[30] = Banco[30] - 1;
 	end
 end
 

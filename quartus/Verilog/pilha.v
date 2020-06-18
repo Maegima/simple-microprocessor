@@ -1,4 +1,4 @@
-module pilha(data, read_addr, write_addr, EscMen, clk, saida);
+module pilha(data, saida, read_addr, write_addr, EscMen, clk);
 parameter DATA_WIDTH=32, ADDR_WIDTH=8;
 
 
@@ -9,7 +9,7 @@ output reg [(DATA_WIDTH-1):0] saida;
 
 reg [DATA_WIDTH-1:0] ram[2**ADDR_WIDTH-1:0];
 
-always @ (posedge clk)
+always @ (negedge clk)
 begin
 	if (EscMen)
 		ram[write_addr] <= data;
