@@ -63,22 +63,22 @@ set_location_assignment PIN_W22 -to dsp1[3] -comment disp
 set_location_assignment PIN_W25 -to dsp1[4] -comment disp
 set_location_assignment PIN_U23 -to dsp1[5] -comment disp
 set_location_assignment PIN_U24 -to dsp1[6] -comment disp
-set_location_assignment PIN_AB21 -to switch[0] -comment sw
-set_location_assignment PIN_AC21 -to switch[1] -comment sw
-set_location_assignment PIN_AD21 -to switch[2] -comment sw
-set_location_assignment PIN_AE16 -to switch[3] -comment sw
-set_location_assignment PIN_AE15 -to switch[4] -comment sw
-set_location_assignment PIN_AC19 -to switch[5] -comment sw
-set_location_assignment PIN_AG22 -to switch[15] -comment sw
-set_location_assignment PIN_AD25 -to switch[14] -comment sw
-set_location_assignment PIN_AD22 -to switch[13] -comment sw
-set_location_assignment PIN_AF22 -to switch[12] -comment sw
-set_location_assignment PIN_AF21 -to switch[11] -comment sw
-set_location_assignment PIN_AE22 -to switch[10] -comment sw
-set_location_assignment PIN_AF25 -to switch[9] -comment sw
-set_location_assignment PIN_AE21 -to switch[8] -comment sw
-set_location_assignment PIN_AF15 -to switch[7] -comment sw
-set_location_assignment PIN_AD19 -to switch[6] -comment sw
+set_location_assignment PIN_AA22 -to switch[15] -comment sw
+set_location_assignment PIN_AA23 -to switch[14] -comment sw
+set_location_assignment PIN_AA24 -to switch[13] -comment sw
+set_location_assignment PIN_AB23 -to switch[12] -comment sw
+set_location_assignment PIN_AB24 -to switch[11] -comment sw
+set_location_assignment PIN_AC24 -to switch[10] -comment sw
+set_location_assignment PIN_AB25 -to switch[9] -comment sw
+set_location_assignment PIN_AC25 -to switch[8] -comment sw
+set_location_assignment PIN_AB26 -to switch[7] -comment sw
+set_location_assignment PIN_AD26 -to switch[6] -comment sw
+set_location_assignment PIN_AC26 -to switch[5] -comment sw
+set_location_assignment PIN_AB27 -to switch[4] -comment sw
+set_location_assignment PIN_AD27 -to switch[3] -comment sw
+set_location_assignment PIN_AC27 -to switch[2] -comment sw
+set_location_assignment PIN_AC28 -to switch[1] -comment sw
+set_location_assignment PIN_AB28 -to switch[0] -comment sw
 set_global_assignment -name ENABLE_OCT_DONE OFF
 set_global_assignment -name ENABLE_CONFIGURATION_PINS OFF
 set_global_assignment -name ENABLE_BOOT_SEL_PIN OFF
@@ -140,8 +140,8 @@ set_location_assignment PIN_W26 -to dsp2[3] -comment disp
 set_location_assignment PIN_Y25 -to dsp2[2] -comment disp
 set_location_assignment PIN_AA26 -to dsp2[1] -comment disp
 set_location_assignment PIN_AA25 -to dsp2[0] -comment disp
-set_location_assignment PIN_AH22 -to reset -comment sw
-set_location_assignment PIN_AE24 -to ent -comment sw
+set_location_assignment PIN_Y23 -to reset -comment sw
+set_location_assignment PIN_Y24 -to ent -comment sw
 set_location_assignment PIN_G15 -to outPC[15] -comment pc
 set_location_assignment PIN_F15 -to outPC[14] -comment pc
 set_location_assignment PIN_H17 -to outPC[13] -comment pc
@@ -167,6 +167,7 @@ set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_RO
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_location_assignment PIN_G20 -to ctrl4[2]
 set_location_assignment PIN_E24 -to CM
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name VERILOG_FILE Verilog/unidadeLogicaAritmetica.v
 set_global_assignment -name VERILOG_FILE Verilog/unidadeDeControle.v
 set_global_assignment -name VERILOG_FILE Verilog/processador.v
@@ -183,4 +184,3 @@ set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform1.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform2.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform3.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform4.vwf
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
