@@ -1,4 +1,4 @@
-module processador(clk, clk0, switch, dsp0, dsp1, dsp2, dsp3, dsp4, dsp5, dsp6, dsp7, outPC, reset, ent, ctrl4);
+module processador(clk, clk0, switch, dsp0, dsp1, dsp2, dsp3, dsp4, dsp5, dsp6, dsp7, outPC, reset, ent, ctrl4, DL, d0, d1, s0, s1, s0_men, A0, A1, A2, operacao, ctrl1, ctrl2, ctrl3);
 input reset, ent, clk0;
 input[15:0] switch;
 
@@ -7,38 +7,39 @@ output[6:0] dsp0, dsp1, dsp2, dsp3, dsp4, dsp5, dsp6, dsp7;
 output[15:0] outPC;
 
 reg sig_ent0, sig_ent1;
+reg sig_dsp0, sig_dsp1;
 
 reg[15:0] R_switch;
 reg[25:0] count;
 reg[31:0] last_PC;
 reg[31:0] PC;
 
-wire [7:0] ctrl1;
-wire [4:0] ctrl2;
-wire [4:0] ctrl3;
-output [1:0] ctrl4;
+output[7:0] ctrl1;
+output[4:0] ctrl2;
+output[4:0] ctrl3;
+output[2:0] ctrl4;
 
 wire[31:0] instruction;
-wire[31:0] s0, s1, s0_men;
+output[31:0] s0, s1, s0_men;
 wire[31:0] SP, AS, RF, JR;
-wire[31:0] d0, d1; 
+output[31:0] d0, d1; 
 wire[31:0] e0_ula, e1_ula, s0_ula, s1_ula;
 wire[31:0] load_addr, store_addr, md_addr;
 wire[31:0] imediato, esc0_banc; 
 wire[31:0] s0_pilha, pilha_addr;
 
-wire[5:0] operacao;
+output[5:0] operacao;
 
 wire[4:0] reg1, reg2, reg3;
 
 wire comp, CM, cm, esc_pilha;
-
+output DL;
+output[31:0] A0, A1, A2;
 //parameter LDREG = 3'd01, LDHI    = 3'd02, LDLO   = 3'd03, LDTIME = 3'd04, LDPTIME   = 3'd05; 
 parameter EmpDesemp = 3'd04, Pilha2  = 3'd03, Pilha1 = 3'd02, EscReg2 = 3'd01, EscReg1 = 3'd00; //ctrl1 
 parameter MenReg    = 3'd04, LerReg3 = 3'd03, LerMen = 3'd02, EscMen  = 3'd01, RegIme  = 3'd00; //ctrl2
 parameter Desloc    = 3'd04, ULAOp   = 3'd03, Salto  = 3'd02, Desvio  = 3'd01, ExSin   = 3'd00; //ctrl3
-parameter Entrada   = 3'd01, Saida   = 3'd00; //ctrl4
-
+parameter Delay	  = 3'd02, Entrada = 3'd01, Saida  = 3'd00; //ctrl4
 
 assign outPC = PC[15:0];
 
@@ -81,8 +82,8 @@ unidadeDeControle ctrl0(instruction[31:26], instruction[5:0], ctrl1, ctrl2, ctrl
 //module controladorULA(opcode, opex, ctrl, s0);
 controladorULA ctrlULA0(instruction[31:26], instruction[5:0], ctrl3[4:1], operacao);
 
-//bancoDeRegistradores(RL0, RL1, RE0, esc0, esc1, comp, D0, D1, CM, AS, SP, ctrl, clk);
-bancoDeRegistradores b0(reg2, reg1, reg3, esc0_banc, s1, cm, d0, d1, CM, AS, SP, JR, RF, ctrl1, clk);
+//bancoDeRegistradores(RL0, RL1, RE0, esc0, esc1, comp, D0, D1, CM, DL, AS, SP, JR, RF, ctrl, delay, reset, clk, clk0, A0, A1);
+bancoDeRegistradores b0(reg2, reg1, reg3, esc0_banc, s1, cm, d0, d1, CM, DL, AS, SP, JR, RF, ctrl1, ctrl4[2], reset, clk, clk0, A0, A1, A2);
 
 //UnidadeLogicaAritmetica(e0, e1, s0, s1, c0, seletor);
 unidadeLogicaAritmetica ula0(e0_ula, e1_ula, s0_ula, s1_ula, comp, operacao);
@@ -104,7 +105,9 @@ begin
 		PC = 32'b0;
 		sig_ent0 = 1'b0;
 		sig_ent1 = 1'b0;
-	end
+		sig_dsp0 = 1'b0;
+		sig_dsp1 = 1'b0;
+ 	end
 	else if(ctrl1[7:5] == 3'b001) begin
 		if(ctrl3[Salto])
 			PC = JR;
@@ -136,17 +139,33 @@ begin
 			PC = {6'b0, instruction[25:0]};
 		else if(ctrl3[Desvio] & CM)
 			PC = {6'b0, instruction[25:0]};
+		else if(ctrl4[Delay]) begin
+			if(~DL & sig_dsp0) begin
+				PC = PC + 32'b1;
+				sig_dsp1 = 1'b0;
+				sig_dsp0 = 1'b0;
+			end
+			else begin
+				sig_dsp0 = 1'b1;
+			end
+		end
 		else
 			PC = PC + 1;
 	end
 end
 
-always @(posedge clk0)
+always @(posedge clk0 or negedge reset)
 begin
-	count = count+26'b1;
-	if(count == 26'd25000000) begin
-		clk = ~clk;
+	if(~reset) begin
+		clk = 1;
 		count = 0;
+	end
+	else begin
+		count = count+26'b1;
+		if(count == 26'd25000000) begin
+			clk = ~clk;
+			count = 0;
+		end
 	end
 end
 

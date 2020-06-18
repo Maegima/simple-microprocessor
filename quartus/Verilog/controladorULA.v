@@ -15,7 +15,7 @@ parameter MOVER = 5'b10000, NEGAR = 5'b10001, IMEDI = 5'b10010, IMEDI = 5'b10011
 */
 
 assign reg_inst = (opex > 5'b10011 && opex < 5'b11010) ? 5'b10000 : ((opex < 5'b10010) ? {1'b0 ,opex[4:0]} : {2'b0 ,opex[3:0]}); // mover registrador ou operação ULA
-assign ime_inst = (opcode[4:1] == 4'b1000) ? 5'b11111 : {2'b0 ,opcode[3:0]}; // carregar imediato ou operação ULA
+assign ime_inst = (opcode[5:0] == 6'b111001) ? 5'b10000 : ((opcode[4:1] == 4'b1000) ? 5'b11111 : {2'b0 ,opcode[3:0]}); // carregar imediato ou operação ULA
 
 assign t1 = ctrl[2] ? ime_inst : reg_inst; // imediato ou registrador
 assign t2 = (opcode[5:4] == 2'b10 | opcode[5:3] == 3'b110 ) ? 5'b11111 : t1; // memoria/salto ou t1
