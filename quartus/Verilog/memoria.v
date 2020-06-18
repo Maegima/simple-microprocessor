@@ -1,5 +1,5 @@
 module memoria(data, saida, write_addr, read_addr, EscMen, write_clock, read_clock);
-parameter DATA_WIDTH=8, ADDR_WIDTH=4;
+parameter DATA_WIDTH=8, ADDR_WIDTH=12;
 	input [(DATA_WIDTH-1):0] data;
 	input [(ADDR_WIDTH-1):0] read_addr, write_addr;
 	input EscMen, write_clock, read_clock;

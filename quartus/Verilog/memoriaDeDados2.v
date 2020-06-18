@@ -1,7 +1,7 @@
 module memoriaDeDados2(data, saida, addr, EscMen, ReadMen, DataType, write_clock, read_clock);
-parameter DATA_WIDTH=32, ADDR_WIDTH=4;
+parameter DATA_WIDTH=32, ADDR_WIDTH=14;
 	input [(DATA_WIDTH-1):0] data;
-	input [(ADDR_WIDTH+1):0] addr;
+	input [(ADDR_WIDTH-1):0] addr;
 	input [1:0]DataType;
 	input EscMen, ReadMen, write_clock, read_clock;
 	output reg [(DATA_WIDTH-1):0] saida;
@@ -9,7 +9,7 @@ parameter DATA_WIDTH=32, ADDR_WIDTH=4;
 	reg [(DATA_WIDTH-1):0] dd;
 	
 	wire [7:0] s0, s1, s2, s3;
-	wire [ADDR_WIDTH-1:0] addr0, addr1, addr2, addr3;
+	wire [ADDR_WIDTH-3:0] addr0, addr1, addr2, addr3;
 	wire EscMen0, EscMen1, EscMen2, EscMen3;
 	
 	wire [(DATA_WIDTH-1):0] data0;
@@ -27,10 +27,10 @@ parameter DATA_WIDTH=32, ADDR_WIDTH=4;
 	assign EscMen3 = esc[selMen+1];
 	
 	
-	assign addr0 = addr[5:2] + |addr[1:0];
-	assign addr1 =	addr[5:2] + &addr[1]; 
-	assign addr2 = addr[5:2] + &addr[1:0];
-	assign addr3 = addr[5:2];
+	assign addr0 = addr[(ADDR_WIDTH-1):2] + |addr[1:0];
+	assign addr1 =	addr[(ADDR_WIDTH-1):2] + &addr[1]; 
+	assign addr2 = addr[(ADDR_WIDTH-1):2] + &addr[1:0];
+	assign addr3 = addr[(ADDR_WIDTH-1):2];
 	
 	memoria m0(data0[7:0], s0, addr0, addr0, EscMen & EscMen0, write_clock, read_clock);
 	

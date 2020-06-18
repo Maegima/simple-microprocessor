@@ -53,7 +53,7 @@ set_global_assignment -name FLOW_DISABLE_ASSEMBLER ON
 set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS ON
 set_global_assignment -name FITTER_EFFORT "FAST FIT"
 set_global_assignment -name PHYSICAL_SYNTHESIS_EFFORT FAST
-set_global_assignment -name SMART_RECOMPILE ON
+set_global_assignment -name SMART_RECOMPILE OFF
 set_global_assignment -name TIMING_ANALYZER_REPORT_SCRIPT_INCLUDE_DEFAULT_ANALYSIS OFF
 set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
