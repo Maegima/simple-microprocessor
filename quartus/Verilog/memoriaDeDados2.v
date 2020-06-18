@@ -1,5 +1,5 @@
 module memoriaDeDados2(data, saida, addr, EscMen, ReadMen, DataType, write_clock, read_clock);
-parameter DATA_WIDTH=32, ADDR_WIDTH=14;
+parameter DATA_WIDTH=32, ADDR_WIDTH=8;
 	input [(DATA_WIDTH-1):0] data;
 	input [(ADDR_WIDTH-1):0] addr;
 	input [1:0]DataType;

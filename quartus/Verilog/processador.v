@@ -1,25 +1,27 @@
-module processador(clk, s0, s1, CM, switch, button, display, PC, instruction, s0_men, /*ctrl1, ctrl2, ctrl3, ctrl4,*/ d0, d1);
-input clk;
-
-output reg[31:0] display;
+module processador(clk, clk0, switch, display0, display1, display2, display3, display4, display5, display6, display7, outPC, reset, ent, ctrl4);
+input reset, ent, clk0;
 input[15:0] switch;
-input[3:0] button;
 
-output [31:0] s0, s1, s0_men;
-output CM;
-output reg[31:0] PC;
-output[31:0] instruction;
+output reg clk;
+output reg[6:0] display0, display1, display2, display3, display4, display5, display6, display7;
+output[15:0] outPC;
+
+reg sig_ent0, sig_ent1;
 
 reg[15:0] R_switch;
+reg[25:0] count;
 reg[31:0] last_PC;
+reg[31:0] PC;
 
 wire [7:0] ctrl1;
 wire [4:0] ctrl2;
 wire [4:0] ctrl3;
-wire [1:0] ctrl4;
+output [1:0] ctrl4;
 
+wire[31:0] instruction;
+wire[31:0] s0, s1, s0_men;
 wire[31:0] SP, AS, RF, JR;
-output[31:0] d0, d1; 
+wire[31:0] d0, d1; 
 wire[31:0] e0_ula, e1_ula, s0_ula, s1_ula;
 wire[31:0] load_addr, store_addr, md_addr;
 wire[31:0] imediato, esc0_banc; 
@@ -27,9 +29,11 @@ wire[31:0] s0_pilha, pilha_addr;
 
 wire[5:0] operacao;
 
+wire[31:0] disp[7:0];
+
 wire[4:0] reg1, reg2, reg3;
 
-wire comp, cm, esc_pilha;
+wire comp, CM, cm, esc_pilha;
 
 //parameter LDREG = 3'd01, LDHI    = 3'd02, LDLO   = 3'd03, LDTIME = 3'd04, LDPTIME   = 3'd05; 
 parameter EmpDesemp = 3'd04, Pilha2  = 3'd03, Pilha1 = 3'd02, EscReg2 = 3'd01, EscReg1 = 3'd00; //ctrl1 
@@ -37,10 +41,8 @@ parameter MenReg    = 3'd04, LerReg3 = 3'd03, LerMen = 3'd02, EscMen  = 3'd01, R
 parameter Desloc    = 3'd04, ULAOp   = 3'd03, Salto  = 3'd02, Desvio  = 3'd01, ExSin   = 3'd00; //ctrl3
 parameter Entrada   = 3'd01, Saida   = 3'd00; //ctrl4
 
-initial
-begin
-	PC = 0;
-end
+
+assign outPC = PC[15:0];
 
 // Seleciona registrador Escrita/Leitura
 assign reg3 = instruction[25:21];
@@ -90,38 +92,71 @@ unidadeLogicaAritmetica ula0(e0_ula, e1_ula, s0_ula, s1_ula, comp, operacao);
 //memoriaDeDados2(data, saida, addr, EscMen, ReadMen, DataType, write_clock, read_clock);
 memoriaDeDados2 md0(d0, s0_men, md_addr[13:0], ctrl2[EscMen], ctrl2[LerMen], instruction[27:26], clk, clk);
 
-always @(negedge clk)
+assign disp[0] = d0;
+assign disp[1] = (disp[0]/10);
+assign disp[2] = (disp[1]/10);
+assign disp[3] = (disp[2]/10);
+assign disp[4] = (disp[3]/10);
+assign disp[5] = (disp[4]/10);
+assign disp[6] = (disp[5]/10);
+assign disp[7] = (disp[6]/10);
+
+always @(negedge clk or negedge reset)
 begin
-	if(ctrl4[Saida])
-		display = d0;
+	if(~reset)
+	begin
+		display0 = 7'b1111111;
+		display1 = 7'b1111111;
+		display2 = 7'b1111111;
+		display3 = 7'b1111111;
+		display4 = 7'b1111111;
+		display5 = 7'b1111111;
+		display6 = 7'b1111111;
+		display7 = 7'b1111111;
+	end
+	else if(ctrl4[Saida])
+	begin	
+		display0 = decod_BCD(disp[0]%10);
+		display1 = decod_BCD(disp[1]%10);
+		display2 = decod_BCD(disp[2]%10);
+		display3 = decod_BCD(disp[3]%10);
+		display4 = decod_BCD(disp[4]%10);
+		display5 = decod_BCD(disp[5]%10);
+		display6 = decod_BCD(disp[6]%10);
+		display7 = decod_BCD(disp[7]%10);
+	end
 end
 
-always @(posedge clk)
+always @(posedge clk or negedge reset)
 begin
 	last_PC = PC;
-	if(ctrl1[7:5] == 3'b001)
-	begin
+	if(~reset) begin
+		PC = 32'b0;
+		sig_ent0 = 1'b0;
+		sig_ent1 = 1'b0;
+	end
+	else if(ctrl1[7:5] == 3'b001) begin
 		if(ctrl3[Salto])
 			PC = JR;
 		else if(ctrl3[Desvio] & CM)
 			PC = JR;
-		else if(button[3])
-			PC = 0;
-		else if(ctrl4[Entrada])
-		begin
-			if(button[0])
-			begin
+		else if(ctrl4[Entrada]) begin
+			if(sig_ent1) begin
 				R_switch = switch;
-				PC = PC + 1;
+				PC = PC + 32'b1;
+				sig_ent0 = 1'b0;
+				sig_ent1 = 1'b0;
+			end
+			else begin
+				sig_ent1 = ent & sig_ent0;
+				sig_ent0 = ~ent;
 			end
 		end
 		else
 			PC = PC + 1;
 	end
-	else
-	begin
-		if(ctrl1[Pilha1])
-		begin
+	else begin
+		if(ctrl1[Pilha1]) begin
 			if(ctrl1[EmpDesemp])
 				PC = {6'b0, instruction[25:0]};
 			else
@@ -131,10 +166,40 @@ begin
 			PC = {6'b0, instruction[25:0]};
 		else if(ctrl3[Desvio] & CM)
 			PC = {6'b0, instruction[25:0]};
-		else if(button[3])
-			PC = 67;
 		else
 			PC = PC + 1;
 	end
 end
+
+function automatic[6:0] decod_BCD;
+	input[3:0] in;
+	reg[6:0] display;
+	begin
+		case(in)
+			4'd0:    display = 7'b1000000;
+			4'd1:    display = 7'b1111001;
+			4'd2:    display = 7'b0100100;
+			4'd3:    display = 7'b0110000;
+			4'd4:    display = 7'b0011001;
+			4'd5:    display = 7'b0010010;
+			4'd6:    display = 7'b0000010;
+			4'd7:    display = 7'b1111000;
+			4'd8:    display = 7'B0000000;
+			4'd9:    display = 7'b0010000;
+			default: display = 7'b1111111;
+		endcase
+		decod_BCD = display;
+	end
+endfunction
+
+always @(posedge clk0)
+begin
+	count = count+26'b1;
+	if(count == 26'd12500000)
+	begin
+		clk = ~clk;
+		count = 0;
+	end
+end
+
 endmodule
